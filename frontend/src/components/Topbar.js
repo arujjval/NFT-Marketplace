@@ -1,25 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
+import React from 'react';
 
-const Topbar = () => {
-    const [isConnected, setIsConnected] = useState(false);
-    const [connectWallet, setConnectWallet] = useState('');
+export const Topbar = () => {
+    const connectThisWallet = () => {
+        
+    }
 
     return (
-    <header className="bg-gray-800 text-white p-4 flex justify-between">
-        <div className="text-xl font-bold">NFT Marketplace</div>
-        <div>
-        {isConnected ? (
-            <p className="text-green-500">Connected address: {address}</p>
-        ) : (
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={connectWallet}>
-                Connect Wallet
-            </button>   
-
-        )}
-        </div>
-    </header>
-  )
+        <header className="bg-gray-800 text-white p-4 flex justify-between">
+            <div className="px-20 h-20 w-screen bg-red-100 flex justify-between items-center text-black">
+            <div>
+                NFT Marketplace
+            </div>
+            <div>
+                <Button onClick={connectThisWallet}>
+                {signer? signer.address.slice(0, 7) + '...' 
+                + signer.address.slice(38, 42) : "Connect Wallet"}
+                </Button>
+            </div>
+            </div>
+        </header>
+    )
 }
-
-export default Topbar

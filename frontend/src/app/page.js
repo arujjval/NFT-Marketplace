@@ -1,25 +1,24 @@
 "use client"
 
-import { useState, useEffect, createContext } from  "react"
-import { ethers, Contract, parseEther } from "ethers"
-import { buyNFT, getListedNFTs } from "../context/api"
-import { abi, address } from "@/context/contract"
-import { Button } from "antd"
-import Topbar from "@/components/Topbar"
+import { useState, createContext } from  "react"
+import { ethers } from "ethers"
+import { Button } from '@/components/ui/button'
+import { useRouter } from 'next/navigation'
+
 import ListNFTs from "@/components/ListNFTs"
 
 export const SignerContext = createContext()
 
 export default function Home() {
   const [signer, setSigner] = useState(null)
+  const router = useRouter()
 
   const connectWallet = async () => {
     if(window.ethereum) {
       const provider = new ethers.BrowserProvider(window.ethereum)
       await provider.send("eth_requestAccounts", [])
-      const signer = provider.getSigner()
-
-      setSigner(signer)    
+      const signer = await provider.getSigner()
+      setSigner(signer) 
     }
     else {
       console.log("Install Metamask")
@@ -27,17 +26,23 @@ export default function Home() {
   }
 
   return (
-    <SignerContext.Provider value={signer}>
-      <div>
-        <div className="px-20 h-20 w-screen bg-red-100 flex justify-between items-center text-black">
-          <div>
-            NFT Marketplace
+    <SignerContext.Provider value={{ signer }}>
+      <div className="w-screen h-screen bg-[#0C0C0C] text-[#ECDFCC]">
+        <div className="px-20 py-10 w-screen bg-[#3C3D37] flex justify-between items-center text-[#ECDFCC]">
+          <div className="font-semibold text-4xl">
+            The NFT Marketplace
           </div>
-          <div>
-            <Button>Connect Wallet</Button>
+          <div className="flex flex-row justify-between items-center gap-4">
+            <Button onClick={() => router.push('/list-nft')}>
+              List your NFT
+            </Button>
+            <Button onClick={connectWallet}>
+              {signer? signer.address.slice(0, 7) + '...' 
+              + signer.address.slice(38, 42) : "Connect Wallet"}
+            </Button>
           </div>
         </div>
-        <div>
+        <div className="w-screen flex flex-col items-center">
           <ListNFTs />
         </div>
       </div>

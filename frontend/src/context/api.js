@@ -3,6 +3,18 @@ import { ethers, Contract } from 'ethers';
 
 const url = "https://sepolia.infura.io/v3/17a9750b036a4aa7924d123e0deeabd0"
 
+export const connectWallet = async () => {
+    if(window.ethereum) {
+        const provider = new ethers.BrowserProvider(window.ethereum)
+        await provider.send("eth_requestAccounts", [])
+        const signer = await provider.getSigner()
+        return signer
+    }
+    else {
+        console.log("Install Metamask")
+    }
+}
+
 export const getNFT = async (id) => {
         const provider = new ethers.JsonRpcProvider(url)
         const contract = new Contract(address, abi, provider)
@@ -28,10 +40,10 @@ export const buyNFT = async (id, signer) => {
     }
 }
 
-export const listNFT = async (name, address, price, signer) => {
+export const listNFT = async (name, NFTaddress, price, signer) => {
     try{
         const contract = new Contract(address, abi, signer)
-        const tx = await contract.listItem(name, address, price);
+        const tx = await contract.listItem(name, NFTaddress, price);
         await tx.wait();
         console.log("NFT " + name + " address: " + address + 
             " has been listed with price: " + price) 
@@ -59,6 +71,7 @@ export const getListedNFTs = async () => {
         const contract = new Contract(address, abi, provider)
         const nfts = await contract.getListedNFTs()
         console.log(nfts)
+        return nfts
     } catch (error) {
         console.log(error)
     } 
